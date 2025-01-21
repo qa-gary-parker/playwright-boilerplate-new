@@ -1,15 +1,15 @@
 pipeline {
-   agent any
+   agent { 
+      docker { 
+         image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+         args '-v /c/ProgramData/Jenkins/.jenkins/workspace/playwright:/workspace -w /workspace'
+      }
+   }
    stages {
       stage('e2e-tests') {
          steps {
-            sh '''
-            docker run --rm \
-               -v /c/ProgramData/Jenkins/.jenkins/workspace/playwright:/workspace \
-               -w /workspace \
-               mcr.microsoft.com/playwright:v1.49.1-noble \
-               sh -c "npm ci && npx playwright test"
-            '''
+            sh 'npm ci'
+            sh 'npx playwright test'
          }
       }
    }
