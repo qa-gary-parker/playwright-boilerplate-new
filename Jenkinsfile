@@ -1,10 +1,10 @@
 pipeline {
    agent { 
-    docker { 
-        image 'mcr.microsoft.com/playwright:v1.49.1-noble'
-        args '-v /c/ProgramData/Jenkins/.jenkins/workspace/playwright:/workspace -w /workspace'
-        } 
-    }
+      docker { 
+         image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+         args '-v C:/ProgramData/Jenkins/.jenkins/workspace/playwright:C:/workspace -w C:/workspace'
+      } 
+   }
    stages {
       stage('e2e-tests') {
          steps {
