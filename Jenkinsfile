@@ -1,5 +1,4 @@
 pipeline {
-    agent { label 'windows' } // Ensures the agent is a Windows machine
     stages {
         stage('e2e-tests') {
             steps {
