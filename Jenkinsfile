@@ -1,5 +1,5 @@
 pipeline {
-   agent { docker { image 'mcr.microsoft.com/playwright:v1.49.1-noble' } }
+   agent any
    stages {
       stage('e2e-tests') {
          steps {
