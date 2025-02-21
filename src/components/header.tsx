@@ -18,4 +18,4 @@ const WebComponent = () => {
 };
 
 export default WebComponent;
-//comment update
+//comment added
