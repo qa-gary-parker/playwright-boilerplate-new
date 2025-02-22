@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../src/components/button"; // Ensure correct path
+import Button from "./button";
 
 type ModalProps = {
     title: string;
