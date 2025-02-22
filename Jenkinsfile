@@ -72,19 +72,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-        }
-        cleanup {
-            bat 'rmdir /s /q test-results' // Cleanup AFTER Jenkins processes reports
-        }
-        failure {
-            echo "❌ Playwright tests failed. Check reports for details."
-        }
-        success {
-            echo "✅ All Playwright tests passed successfully!"
-        }
-    }
 }
