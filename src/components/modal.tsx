@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./button"; // This dependency will be tracked
+import Button from "./Button"; // This dependency will be tracked
 
 type ModalProps = {
     title: string;
