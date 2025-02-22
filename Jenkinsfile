@@ -44,17 +44,17 @@ pipeline {
             parallel {
                 stage('Shard 1') {
                     steps {
-                        bat 'npx playwright test --shard=1/3 --reporter=junit --output=test-results'
+                        bat 'npx playwright test --shard=1/3 --reporter=junit --output=test-results/shard1'
                     }
                 }
                 stage('Shard 2') {
                     steps {
-                        bat 'npx playwright test --shard=2/3 --reporter=junit --output=test-results'
+                        bat 'npx playwright test --shard=2/3 --reporter=junit --output=test-results/shard2'
                     }
                 }
                 stage('Shard 3') {
                     steps {
-                        bat 'npx playwright test --shard=3/3 --reporter=junit --output=test-results'
+                        bat 'npx playwright test --shard=3/3 --reporter=junit --output=test-results/shard3'
                     }
                 }
             }
@@ -62,13 +62,7 @@ pipeline {
 
         stage('Publish Test Reports') {
             steps {
-                junit 'test-results/*.xml' // Ensure Jenkins finds test results
-            }
-        }
-
-        stage('Generate Playwright Report') {
-            steps {
-                bat 'npx playwright show-report'
+                junit 'test-results/**/*.xml' // Ensure Jenkins finds test results
             }
         }
     }
