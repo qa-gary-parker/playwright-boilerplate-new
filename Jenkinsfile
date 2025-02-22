@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '18' // Adjust to match your project setup
+        NODE_VERSION = '18' // Adjust if necessary
     }
 
     options {
-        timestamps() // Adds timestamps to logs
+        timestamps()
     }
 
     stages {
@@ -30,30 +30,39 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci' // Use `npm ci` for reproducible installs
+                sh 'npm ci'
             }
         }
 
-        stage('Run Playwright Tests in Shards') {
+        stage('Install Playwright Browsers') {
             steps {
-                sh 'npx playwright install' // Ensure browsers are installed
-                parallel (
-                    shard1: {
-                        sh 'npx playwright test --shard=1/3 --reporter=dot,junit'
-                    },
-                    shard2: {
-                        sh 'npx playwright test --shard=2/3 --reporter=dot,junit'
-                    },
-                    shard3: {
-                        sh 'npx playwright test --shard=3/3 --reporter=dot,junit'
+                sh 'npx playwright install'
+            }
+        }
+
+        stage('Run Playwright Tests in Parallel') {
+            parallel {
+                stage('Shard 1') {
+                    steps {
+                        sh 'npx playwright test --shard=1/3 --reporter=dot,junit --output=test-results/shard1'
                     }
-                )
+                }
+                stage('Shard 2') {
+                    steps {
+                        sh 'npx playwright test --shard=2/3 --reporter=dot,junit --output=test-results/shard2'
+                    }
+                }
+                stage('Shard 3') {
+                    steps {
+                        sh 'npx playwright test --shard=3/3 --reporter=dot,junit --output=test-results/shard3'
+                    }
+                }
             }
         }
 
         stage('Publish Test Reports') {
             steps {
-                junit '**/test-results/*.xml' // Collect JUnit test results
+                junit '**/test-results/**/*.xml'
             }
         }
 
@@ -67,7 +76,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-            sh 'rm -rf test-results' // Cleanup after archiving
+            sh 'rm -rf test-results' // Cleanup
         }
         failure {
             echo "❌ Playwright tests failed. Check reports for details."
