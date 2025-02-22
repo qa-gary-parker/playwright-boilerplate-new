@@ -53,30 +53,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Publish Test Reports') {
-            steps {
-                junit '**/test-results/**/*.xml' // Publish all XML results from subdirectories
-            }
-        }
-
-        stage('Generate Playwright Report') {
-            steps {
-                bat 'npx playwright show-report'
-            }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-            bat 'rmdir /s /q test-results' // Cleanup for Windows
-        }
-        failure {
-            echo "❌ Playwright tests failed. Check reports for details."
-        }
-        success {
-            echo "✅ All Playwright tests passed successfully!"
-        }
-    }
+  }
 }
