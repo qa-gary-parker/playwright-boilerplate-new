@@ -18,7 +18,7 @@ pipeline {
 
         stage('Setup Node.js') {
             steps {
-                bat 'where node || choco install nodejs-lts' // Install Node.js if missing
+                bat 'where node || (choco install nodejs-lts -y && refreshenv)' // Ensure Node.js is installed
             }
         }
 
@@ -34,21 +34,27 @@ pipeline {
             }
         }
 
+        stage('Prepare Test Results Directory') {
+            steps {
+                bat 'mkdir test-results'
+            }
+        }
+
         stage('Run Playwright Tests in Parallel') {
             parallel {
                 stage('Shard 1') {
                     steps {
-                        bat 'npx playwright test --shard=1/3 --reporter=dot,junit --output=test-results/shard1'
+                        bat 'npx playwright test --shard=1/3 --reporter=junit --output=test-results'
                     }
                 }
                 stage('Shard 2') {
                     steps {
-                        bat 'npx playwright test --shard=2/3 --reporter=dot,junit --output=test-results/shard2'
+                        bat 'npx playwright test --shard=2/3 --reporter=junit --output=test-results'
                     }
                 }
                 stage('Shard 3') {
                     steps {
-                        bat 'npx playwright test --shard=3/3 --reporter=dot,junit --output=test-results/shard3'
+                        bat 'npx playwright test --shard=3/3 --reporter=junit --output=test-results'
                     }
                 }
             }
@@ -56,7 +62,7 @@ pipeline {
 
         stage('Publish Test Reports') {
             steps {
-                junit '**/test-results/**/*.xml' // Match XML files in all subdirectories
+                junit 'test-results/results.xml' // Match JUnit report explicitly
             }
         }
 
@@ -70,7 +76,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-            bat 'rmdir /s /q test-results' // Cleanup for Windows
+            bat 'rmdir /s /q test-results' // Cleanup after run
         }
         failure {
             echo "❌ Playwright tests failed. Check reports for details."
