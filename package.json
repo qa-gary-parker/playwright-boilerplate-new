@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test-ct": "playwright test -c playwright-ct.config.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/experimental-ct-react": "^1.50.1",
     "@playwright/test": "^1.50.1",
     "@types/node": "^22.13.1"
   },
