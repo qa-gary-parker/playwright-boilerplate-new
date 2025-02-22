@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./Button"; // This dependency will be tracked
+import Button from "../../src/components/button"; // Ensure correct path
 
 type ModalProps = {
     title: string;

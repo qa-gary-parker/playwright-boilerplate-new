@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.5.0",
-    "react": "^19.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }
