@@ -18,25 +18,19 @@ pipeline {
 
         stage('Setup Node.js') {
             steps {
-                script {
-                    def nodeExists = sh(script: 'which node', returnStatus: true) == 0
-                    if (!nodeExists) {
-                        sh "curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -"
-                        sh "apt-get install -y nodejs"
-                    }
-                }
+                bat 'where node || choco install nodejs-lts' // Install Node.js if missing
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                bat 'npm ci'
             }
         }
 
         stage('Install Playwright Browsers') {
             steps {
-                sh 'npx playwright install'
+                bat 'npx playwright install'
             }
         }
 
@@ -44,17 +38,17 @@ pipeline {
             parallel {
                 stage('Shard 1') {
                     steps {
-                        sh 'npx playwright test --shard=1/3 --reporter=dot,junit --output=test-results/shard1'
+                        bat 'npx playwright test --shard=1/3 --reporter=dot,junit --output=test-results/shard1'
                     }
                 }
                 stage('Shard 2') {
                     steps {
-                        sh 'npx playwright test --shard=2/3 --reporter=dot,junit --output=test-results/shard2'
+                        bat 'npx playwright test --shard=2/3 --reporter=dot,junit --output=test-results/shard2'
                     }
                 }
                 stage('Shard 3') {
                     steps {
-                        sh 'npx playwright test --shard=3/3 --reporter=dot,junit --output=test-results/shard3'
+                        bat 'npx playwright test --shard=3/3 --reporter=dot,junit --output=test-results/shard3'
                     }
                 }
             }
@@ -68,7 +62,7 @@ pipeline {
 
         stage('Generate Playwright Report') {
             steps {
-                sh 'npx playwright show-report'
+                bat 'npx playwright show-report'
             }
         }
     }
@@ -76,7 +70,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-            sh 'rm -rf test-results' // Cleanup
+            bat 'rmdir /s /q test-results' // Cleanup for Windows
         }
         failure {
             echo "❌ Playwright tests failed. Check reports for details."
