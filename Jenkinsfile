@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '18' // Adjust if necessary
+        NODE_VERSION = '18'
     }
 
     options {
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Setup Node.js') {
             steps {
-                bat 'where node || (choco install nodejs-lts -y && refreshenv)' // Ensure Node.js is installed
+                bat 'where node || (choco install nodejs-lts -y && refreshenv)'
             }
         }
 
@@ -62,7 +62,7 @@ pipeline {
 
         stage('Publish Test Reports') {
             steps {
-                junit 'test-results/results.xml' // Match JUnit report explicitly
+                junit 'test-results/*.xml' // Ensure Jenkins finds test results
             }
         }
 
@@ -76,7 +76,9 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: 'test-results/**', fingerprint: true
-            bat 'rmdir /s /q test-results' // Cleanup after run
+        }
+        cleanup {
+            bat 'rmdir /s /q test-results' // Cleanup AFTER Jenkins processes reports
         }
         failure {
             echo "❌ Playwright tests failed. Check reports for details."
