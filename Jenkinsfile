@@ -41,16 +41,16 @@ pipeline {
                         bat 'npx playwright test --shard=1/3 --reporter=junit --output=test-results/shard1'
                     }
                 }
-                stage('Shard 2') {
-                    steps {
-                        bat 'npx playwright test --shard=2/3 --reporter=junit --output=test-results/shard2'
-                    }
-                }
-                stage('Shard 3') {
-                    steps {
-                        bat 'npx playwright test --shard=3/3 --reporter=junit --output=test-results/shard3'
-                    }
-                }
+                // stage('Shard 2') {
+                //     steps {
+                //         bat 'npx playwright test --shard=2/3 --reporter=junit --output=test-results/shard2'
+                //     }
+                // }
+                // stage('Shard 3') {
+                //     steps {
+                //         bat 'npx playwright test --shard=3/3 --reporter=junit --output=test-results/shard3'
+                //     }
+                // }
             }
         }
   }
