@@ -10,4 +10,3 @@ const Button: React.FC<ButtonProps> = ({ label, onClick }) => {
 };
 
 export default Button;
-//comment two 2asd
